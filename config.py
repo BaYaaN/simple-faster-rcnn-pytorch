@@ -18,9 +18,8 @@ class Config:
     lr_decay = 0.1  # 1e-3 -> 1e-4
     lr = 1e-3
 
-
     # visualization
-    env = 'faster-rcnn'  # visdom env
+    env = 'fasterrcnn-caffe'  # visdom env
     port = 8097
     plot_every = 40  # vis every N iter
 
@@ -31,19 +30,16 @@ class Config:
     # training
     epoch = 14
 
-
     use_adam = False # Use Adam optimizer
-    use_chainer = False # try match everything as chainer
+    # use_chainer = False # try match everything as chainer
     use_drop = False # use dropout in RoIHead
+
     # debug
     debug_file = '/tmp/debugf'
-
     test_num = 10000
-    # model
-    load_path = None
 
-    caffe_pretrain = True # use caffe pretrained model instead of torchvision
-    caffe_pretrain_path = 'checkpoints/vgg16_caffe.pth'
+    # model
+    load_path = 'pretrained-model/fasterrcnn_12222105_0.712649824453_caffe_pretrain.pth'
 
     def _parse(self, kwargs):
         state_dict = self._state_dict()
@@ -59,6 +55,5 @@ class Config:
     def _state_dict(self):
         return {k: getattr(self, k) for k, _ in Config.__dict__.items() \
                 if not k.startswith('_')}
-
 
 opt = Config()

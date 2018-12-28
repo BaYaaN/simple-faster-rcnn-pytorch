@@ -1,34 +1,16 @@
-from __future__ import  absolute_import
-from __future__ import  division
-import torch as t
+from __future__ import absolute_import
+from __future__ import division
 
-from skimage import transform as sktsf
-from torchvision import transforms as tvtsf
-from FasterRcnn.data import util
 import numpy as np
+from skimage import transform as sktsf
 
+from FasterRcnn.data import util
 from FasterRcnn.data.voc_dataset import VOCBboxDataset
-from config import opt
 
 
 def inverse_normalize(img):
-    if opt.caffe_pretrain:
-        img = img + (np.array([122.7717, 115.9465, 102.9801]).reshape(3, 1, 1))
-        return img[::-1, :, :]
-    # approximate un-normalize for visualize
-    return (img * 0.225 + 0.45).clip(min=0, max=1) * 255
-
-
-def pytorch_normalze(img):
-    """
-    https://github.com/pytorch/vision/issues/223
-    return appr -1~1 RGB
-    """
-    normalize = tvtsf.Normalize(mean=[0.485, 0.456, 0.406],
-                                std=[0.229, 0.224, 0.225])
-    img = normalize(t.from_numpy(img))
-    return img.numpy()
-
+    img = img + (np.array([122.7717, 115.9465, 102.9801]).reshape(3, 1, 1))
+    return img[::-1, :, :]
 
 def caffe_normalize(img):
     """
@@ -69,10 +51,7 @@ def preprocess(img, min_size=600, max_size=1000):
     img = sktsf.resize(img, (C, H * scale, W * scale), mode='reflect',anti_aliasing=False)
     # both the longer and shorter should be less than
     # max_size and min_size
-    if opt.caffe_pretrain:
-        normalize = caffe_normalize
-    else:
-        normalize = pytorch_normalze
+    normalize = caffe_normalize
     return normalize(img)
 
 

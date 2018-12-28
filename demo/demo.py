@@ -12,13 +12,12 @@
 # import matplotlib.pyplot as plt
 # %matplotlib tk
 #
-# opt.caffe_pretrain=True
-# img = read_image('misc/demo.jpg')
+# img = read_image('demo/demo.jpg')
 # img = t.from_numpy(img)[None]
 # faster_rcnn = FasterRCNNVGG16().cuda()
 #
 #
-# state_dict = t.load('checkpoints/fasterrcnn_12222105_0.712649824453_caffe_pretrain.pth')
+# state_dict = t.load('pretrained-model/fasterrcnn_12222105_0.712649824453_caffe_pretrain.pth')
 # faster_rcnn.load_state_dict(state_dict['model'])
 #
 # _bboxes, _labels, _scores = faster_rcnn.predict(img,visualize=True)
