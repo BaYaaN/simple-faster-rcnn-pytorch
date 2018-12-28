@@ -1,8 +1,5 @@
-"""
-tools to convert specified type
-"""
-import torch as t
 import numpy as np
+import torch as t
 
 
 def tonumpy(data):
