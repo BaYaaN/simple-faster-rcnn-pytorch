@@ -3,18 +3,15 @@ import os
 from collections import namedtuple
 import time
 from torch.nn import functional as F
-
+from FasterRcnn.model.utils.creator_tool import AnchorTargetCreator, ProposalTargetCreator
 
 from torch import nn
 import torch as t
-
-from FasterRcnn.model.utils.creator_tool import AnchorTargetCreator, ProposalTargetCreator
 from FasterRcnn.utils import array_tool as at
-
-from torchnet.meter import ConfusionMeter, AverageValueMeter
-
 from FasterRcnn.utils.vis_tool import Visualizer
-from config import opt
+
+from FasterRcnn.utils.config import opt
+from torchnet.meter import ConfusionMeter, AverageValueMeter
 
 LossTuple = namedtuple('LossTuple',
                        ['rpn_loc_loss',
@@ -199,7 +196,7 @@ class FasterRCNNTrainer(nn.Module):
 
         if save_path is None:
             timestr = time.strftime('%m%d%H%M')
-            save_path = 'pretrained-model/fasterrcnn_%s' % timestr
+            save_path = 'checkpoints/fasterrcnn_%s' % timestr
             for k_, v_ in kwargs.items():
                 save_path += '_%s' % v_
 

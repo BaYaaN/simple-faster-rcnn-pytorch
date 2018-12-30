@@ -83,4 +83,3 @@ class RoIPooling2D(t.nn.Module):
 
     def forward(self, x, rois):
         return self.RoI(x, rois)
-

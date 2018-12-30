@@ -7,7 +7,7 @@ from FasterRcnn.model.faster_rcnn import nograd
 from FasterRcnn.model.utils.bbox_tools import loc2bbox
 from FasterRcnn.model.utils.nms import non_maximum_suppression
 from FasterRcnn.utils import array_tool as at
-from config import opt
+from FasterRcnn.utils.config import opt
 
 
 class GeneratorNetwork(torch.nn.Module):

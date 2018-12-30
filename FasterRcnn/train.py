@@ -1,20 +1,27 @@
-from __future__ import absolute_import
-
+from __future__ import  absolute_import
 # though cupy is not used but without this line, it raise errors...
+import cupy as cp
 import os
 
 import ipdb
 import matplotlib
-from torch.utils import data as data_
 from tqdm import tqdm
 
-from FasterRcnn.data.dataset import Dataset, TestDataset, inverse_normalize
-from FasterRcnn.utils import array_tool as at
-from FasterRcnn.utils.eval_tool import eval_detection_voc
-from FasterRcnn.utils.vis_tool import visdom_bbox
 from FasterRcnn.utils.config import opt
-from gan.generator_network_creator import generatorNetworkCreator
-from gan_training.gan_trainer import GanFasterRCNNTrainer
+from FasterRcnn.data.dataset import Dataset, TestDataset, inverse_normalize
+from FasterRcnn.model import FasterRCNNVGG16
+from torch.utils import data as data_
+from FasterRcnn.trainer import FasterRCNNTrainer
+from FasterRcnn.utils import array_tool as at
+from FasterRcnn.utils.vis_tool import visdom_bbox
+from FasterRcnn.utils.eval_tool import eval_detection_voc
+
+# fix for ulimit
+# https://github.com/pytorch/pytorch/issues/973#issuecomment-346405667
+# import resource
+
+# rlimit = resource.getrlimit(resource.RLIMIT_NOFILE)
+# resource.setrlimit(resource.RLIMIT_NOFILE, (20480, rlimit[1]))
 
 matplotlib.use('agg')
 
@@ -57,10 +64,12 @@ def train(**kwargs):
                                        shuffle=False, \
                                        pin_memory=True
                                        )
-    faster_rcnn = generatorNetworkCreator()
+    faster_rcnn = FasterRCNNVGG16()
     print('model construct completed')
-    trainer = GanFasterRCNNTrainer(faster_rcnn)
-
+    trainer = FasterRCNNTrainer(faster_rcnn).cuda()
+    if opt.load_path:
+        trainer.load(opt.load_path)
+        print('load pretrained model from %s' % opt.load_path)
     trainer.vis.text(dataset.db.label_names, win='labels')
     best_map = 0
     lr_ = opt.lr

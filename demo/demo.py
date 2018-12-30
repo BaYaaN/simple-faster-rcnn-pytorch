@@ -1,15 +1,11 @@
-# USE IT INSIDE PYTHON CONSOLE
-
-#
 # %load_ext autoreload
 # %autoreload 2
+# import torch as t
+#
 # from FasterRcnn.data.util import read_image
 # from FasterRcnn.model import FasterRCNNVGG16
-# from FasterRcnn.utils.vis_tool import vis_bbox
-# from config import opt
 # from FasterRcnn.utils import array_tool as at
-# import torch as t
-# import matplotlib.pyplot as plt
+# from FasterRcnn.utils.vis_tool import vis_bbox
 # %matplotlib tk
 #
 # img = read_image('demo/demo.jpg')
@@ -25,5 +21,5 @@
 #          at.tonumpy(_bboxes[0]),
 #          at.tonumpy(_labels[0]).reshape(-1),
 #          at.tonumpy(_scores[0]).reshape(-1))
-
-
+#
+#

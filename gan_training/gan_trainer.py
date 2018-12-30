@@ -11,7 +11,7 @@ from torchnet.meter import ConfusionMeter, AverageValueMeter
 from FasterRcnn.model.utils.creator_tool import AnchorTargetCreator, ProposalTargetCreator
 from FasterRcnn.utils import array_tool as at
 from FasterRcnn.utils.vis_tool import Visualizer
-from config import opt
+from FasterRcnn.utils.config import opt
 
 LossTuple = namedtuple('LossTuple',
                        ['rpn_loc_loss',

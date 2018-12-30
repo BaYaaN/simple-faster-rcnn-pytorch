@@ -1,8 +1,7 @@
 from __future__ import division
-
-import cupy as cp
 import numpy as np
-
+import cupy as cp
+import torch as t
 try:
     from ._nms_gpu_post import _nms_gpu_post
 except:

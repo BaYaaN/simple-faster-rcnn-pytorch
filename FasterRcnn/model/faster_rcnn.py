@@ -3,16 +3,14 @@ from __future__ import division
 import torch as t
 import numpy as np
 import cupy as cp
-
-from FasterRcnn.data.dataset import preprocess
-from FasterRcnn.model.utils.bbox_tools import loc2bbox
-from FasterRcnn.model.utils.nms.non_maximum_suppression import non_maximum_suppression
 from FasterRcnn.utils import array_tool as at
+from FasterRcnn.model.utils.bbox_tools import loc2bbox
+from FasterRcnn.model.utils.nms import non_maximum_suppression
 
 from torch import nn
+from FasterRcnn.data.dataset import preprocess
 from torch.nn import functional as F
-
-from config import opt
+from FasterRcnn.utils.config import opt
 
 
 def nograd(f):

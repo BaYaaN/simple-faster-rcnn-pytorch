@@ -1,7 +1,7 @@
 import torch
 
 from FasterRcnn.model import FasterRCNNVGG16
-from config import opt
+from FasterRcnn.utils.config import opt
 from gan.generator_network import GeneratorNetwork
 from gan.module.classifier import Classifier
 from gan.module.roi import Roi
