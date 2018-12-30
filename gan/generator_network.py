@@ -1,7 +1,8 @@
-import torch as torch
-import numpy as np
 import cupy as cp
+import numpy as np
+import torch as torch
 from torch.nn import functional as F
+
 from FasterRcnn.data.dataset import preprocess
 from FasterRcnn.model.faster_rcnn import nograd
 from FasterRcnn.model.utils.bbox_tools import loc2bbox
@@ -11,15 +12,17 @@ from FasterRcnn.utils.config import opt
 
 
 class GeneratorNetwork(torch.nn.Module):
-    def __init__(self, extractor, rpn, roi, classifier,
+    def __init__(self, firstConvBlock, lastFourConvBlocks, rpn, roi, classifier,
                  loc_normalize_mean=(0., 0., 0., 0.),
                  loc_normalize_std=(0.1, 0.1, 0.2, 0.2)
                  ):
         super(GeneratorNetwork, self).__init__()
-        self.extractor = extractor
+        self.firstConvBlock = firstConvBlock
+        self.lastFourConvBlocks = lastFourConvBlocks
         self.rpn = rpn
         self.roi = roi
         self.classifier = classifier
+        # self.generator = generator
 
         # only for training purpose
         self.loc_normalize_mean = loc_normalize_mean
@@ -34,9 +37,10 @@ class GeneratorNetwork(torch.nn.Module):
 
     def forward(self, x, scale=1.):
         img_size = x.shape[2:]
-        h = self.extractor(x)
+        outFromFirstConvBlock = self.firstConvBlock(x)
+        h = self.lastFourConvBlocks(outFromFirstConvBlock)
         rpn_locs, rpn_scores, rois, roi_indices, anchor = self.rpn(h, img_size, scale)
-        pool = self.roi(h, rois,roi_indices)
+        pool = self.roi(h, rois, roi_indices)
         roi_cls_locs, roi_scores = self.classifier(pool)
 
         return roi_cls_locs, roi_scores, rois, roi_indices
@@ -92,7 +96,7 @@ class GeneratorNetwork(torch.nn.Module):
         return bbox, label, score
 
     @nograd
-    def predict(self, imgs,sizes=None,visualize=False):
+    def predict(self, imgs, sizes=None, visualize=False):
         """Detect objects from images.
 
         This method predicts objects for each image.
@@ -131,7 +135,7 @@ class GeneratorNetwork(torch.nn.Module):
                 prepared_imgs.append(img)
                 sizes.append(size)
         else:
-             prepared_imgs = imgs
+            prepared_imgs = imgs
         bboxes = list()
         labels = list()
         scores = list()
@@ -199,5 +203,3 @@ class GeneratorNetwork(torch.nn.Module):
         for param_group in self.optimizer.param_groups:
             param_group['lr'] *= decay
         return self.optimizer
-
-

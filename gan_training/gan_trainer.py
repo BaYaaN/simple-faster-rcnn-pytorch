@@ -94,7 +94,8 @@ class GanFasterRCNNTrainer(nn.Module):
         _, _, H, W = imgs.shape
         img_size = (H, W)
 
-        features = self.faster_rcnn.extractor(imgs)
+        outFromFirstConvBlock = self.faster_rcnn.firstConvBlock(imgs)
+        features = self.faster_rcnn.lastFourConvBlocks(outFromFirstConvBlock)
 
         rpn_locs, rpn_scores, rois, roi_indices, anchor = \
             self.faster_rcnn.rpn(features, img_size, scale)
