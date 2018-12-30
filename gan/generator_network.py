@@ -17,6 +17,7 @@ class GeneratorNetwork(torch.nn.Module):
                  loc_normalize_std=(0.1, 0.1, 0.2, 0.2)
                  ):
         super(GeneratorNetwork, self).__init__()
+        # DOES IT SHOULD BE SEUQENTIAL ?
         self.firstConvBlock = firstConvBlock
         self.lastFourConvBlocks = lastFourConvBlocks
         self.rpn = rpn
@@ -38,6 +39,7 @@ class GeneratorNetwork(torch.nn.Module):
     def forward(self, x, scale=1.):
         img_size = x.shape[2:]
         outFromFirstConvBlock = self.firstConvBlock(x)
+        outFromGenerator = self.generator(outFromFirstConvBlock)
         h = self.lastFourConvBlocks(outFromFirstConvBlock)
         rpn_locs, rpn_scores, rois, roi_indices, anchor = self.rpn(h, img_size, scale)
         pool = self.roi(h, rois, roi_indices)

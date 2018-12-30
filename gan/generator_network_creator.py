@@ -14,7 +14,8 @@ n_class_with_background = 21
 def decomposeFasterRCNN():
     model = FasterRCNNVGG16().cuda()
     fillModeWithPretrainedWeights(model)
-    fistConvBlock = list(model.extractor)[:5]
+    firsConvLayerInGenerator = list(model.extractor)[5]
+    firstConvBlock = list(model.extractor)[:5]
     lastFourConvBlocks = list(model.extractor)[5:]
     rpn = model.rpn
     roi = model.head.roi
@@ -22,16 +23,16 @@ def decomposeFasterRCNN():
     cls_loc = model.head.cls_loc
     score = model.head.score
 
-    return torch.nn.Sequential(*fistConvBlock), torch.nn.Sequential(
-        *lastFourConvBlocks), rpn, roi, classifier, cls_loc, score
+    return torch.nn.Sequential(*firstConvBlock), torch.nn.Sequential(
+        *lastFourConvBlocks), rpn, roi, classifier, cls_loc, score, firsConvLayerInGenerator
 
 
 def generatorNetworkCreator(**kwargs):
     opt._parse(kwargs)
-    firstConvBlock, lastFourConvBlocks, rpn, roi, classifier, cls_loc, score = decomposeFasterRCNN()
+    firstConvBlock, lastFourConvBlocks, rpn, roi, classifier, cls_loc, score, firsConvLayerInGenerator = decomposeFasterRCNN()
     classifier = Classifier(classifier, cls_loc, score)
     roi = Roi(n_class_with_background, roi)
-    generator = Generator()
+    generator = Generator(firsConvLayerInGenerator)
 
     return GeneratorNetwork(firstConvBlock, lastFourConvBlocks, rpn, roi, classifier, generator)
 

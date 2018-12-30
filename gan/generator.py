@@ -2,17 +2,13 @@ import torch.nn as nn
 
 
 class Generator(nn.Module):
-    def __init__(self, in_channels=3, out_channels=3, n_residual_blocks=16):
+    def __init__(self, firstConvLayer, in_channels=64, n_residual_blocks=6):
         super(Generator, self).__init__()
 
-        # First layer
-        self.conv1 = nn.Sequential(
-            nn.Conv2d(in_channels, 64, 9, 1, 4),
-        )
-
-        # First layer
-        self.conv1 = nn.Sequential(
-            nn.Conv2d(64, 64, 9, 1, 4),
+        # TODO FIX SIZES
+        self.convBlock = nn.Sequential(
+            firstConvLayer,
+            nn.Conv2d(128, 64, 1),
         )
 
         # Residual blocks
@@ -22,9 +18,8 @@ class Generator(nn.Module):
         self.res_blocks = nn.Sequential(*res_blocks)
 
     def forward(self, x):
-        out1 = self.conv1(x)
-        out2 = self.conv2(out1)
-        out = self.res_blocks(out2)
+        outFromConvBlock = self.convBlock(x)
+        out = self.res_blocks(outFromConvBlock)
         return out
 
 
@@ -35,8 +30,7 @@ class ResidualBlock(nn.Module):
         conv_block = [nn.Conv2d(in_features, in_features, 3, 1, 1),
                       nn.BatchNorm2d(in_features),
                       nn.ReLU(),
-                      nn.Conv2d(in_features, in_features, 3, 1, 1),
-                      nn.BatchNorm2d(in_features)]
+                      nn.Conv2d(in_features, in_features, 3, 1, 1)]
 
         self.conv_block = nn.Sequential(*conv_block)
 
