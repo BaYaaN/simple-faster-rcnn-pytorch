@@ -43,13 +43,9 @@ class Config:
     debug_file = '/tmp/debugf'
 
     test_num = 10000
+
     # model
-
-    # load_path = None
-
-    # ONLY WHEN TRAINING GAN, WHEN TRAINING FASTER R CNN SWITCH TO NONE (like above)
-    load_path = 'pretrained-model/fasterrcnn_12222105_0.712649824453_caffe_pretrain.pth'
-
+    load_path = None
     caffe_pretrain = True  # use caffe pretrained model instead of torchvision
     caffe_pretrain_path = 'checkpoints/vgg16_caffe.pth'
 
