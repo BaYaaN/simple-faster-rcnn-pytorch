@@ -12,7 +12,7 @@ from FasterRcnn.utils.config import opt
 
 
 class GeneratorNetwork(torch.nn.Module):
-    def __init__(self, firstConvBlock, lastFourConvBlocks, rpn, roi, classifier,
+    def __init__(self, firstConvBlock, lastFourConvBlocks, rpn, roi, classifier, generator,
                  loc_normalize_mean=(0., 0., 0., 0.),
                  loc_normalize_std=(0.1, 0.1, 0.2, 0.2)
                  ):
@@ -22,7 +22,7 @@ class GeneratorNetwork(torch.nn.Module):
         self.rpn = rpn
         self.roi = roi
         self.classifier = classifier
-        # self.generator = generator
+        self.generator = generator
 
         # only for training purpose
         self.loc_normalize_mean = loc_normalize_mean
