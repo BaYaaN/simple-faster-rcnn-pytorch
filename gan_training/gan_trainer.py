@@ -94,6 +94,7 @@ class GanFasterRCNNTrainer(nn.Module):
         _, _, H, W = imgs.shape
         img_size = (H, W)
 
+        # TODO add implementation of generator
         outFromFirstConvBlock = self.faster_rcnn.firstConvBlock(imgs)
         features = self.faster_rcnn.lastFourConvBlocks(outFromFirstConvBlock)
 

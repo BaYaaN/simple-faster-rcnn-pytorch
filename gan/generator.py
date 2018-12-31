@@ -3,14 +3,18 @@ import torch.nn as nn
 
 class Generator(nn.Module):
     # TODO REMOVE unsues inputs
-    def __init__(self, in_channels=64, n_residual_blocks=6):
+    def __init__(self, rpn, roi, in_channels=64, n_residual_blocks=6):
         super(Generator, self).__init__()
 
-        # TODO FIX SIZES
+        # TODO FIX SIZES!
         self.convBlock = nn.Sequential(
             nn.Conv2d(in_channels, 128, 3),
             nn.Conv2d(128, 512, 1)
-        ).cuda()
+        )
+
+        # TODO right now we have init weight from voc pascal, is it good or use xavier ?
+        self.rpn = rpn
+        self.roi = roi
 
         # Residual blocks
         res_blocks = []
@@ -18,9 +22,12 @@ class Generator(nn.Module):
             res_blocks.append(ResidualBlock())
         self.res_blocks = nn.Sequential(*res_blocks)
 
-    def forward(self, x):
-        outFromConvBlock = self.convBlock(x)
-        out = self.res_blocks(outFromConvBlock)
+    def forward(self, x, imgSize, scale):
+        featureMap = self.convBlock(x)
+        rpn_locs, rpn_scores, rois, roi_indices, anchor = self.rpn(featureMap, imgSize, scale)
+        pool = self.roi(featureMap, rois, roi_indices)
+
+        out = self.res_blocks(featureMap)
         return out
 
 

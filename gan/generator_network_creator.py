@@ -31,9 +31,10 @@ def generatorNetworkCreator(**kwargs):
     firstConvBlock, lastFourConvBlocks, rpn, roi, classifier, cls_loc, score = decomposeFasterRCNN()
     classifier = Classifier(classifier, cls_loc, score)
     roi = Roi(n_class_with_background, roi)
-    generator = Generator()
+    generator = Generator(rpn, roi).cuda()
 
     return GeneratorNetwork(firstConvBlock, lastFourConvBlocks, rpn, roi, classifier, generator)
+
 
 def fillModeWithPretrainedWeights(model):
     state_dict = torch.load('../' + opt.load_path)
