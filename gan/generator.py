@@ -22,13 +22,12 @@ class Generator(nn.Module):
             res_blocks.append(ResidualBlock())
         self.res_blocks = nn.Sequential(*res_blocks)
 
-    def forward(self, x, imgSize, scale):
+    def forward(self, x, imgSize, scale, bbox, label):
         featureMap = self.convBlock(x)
         rpn_locs, rpn_scores, rois, roi_indices, anchor = self.rpn(featureMap, imgSize, scale)
-        pool = self.roi(featureMap, rois, roi_indices)
+        pool, gt_roi_loc, gt_roi_label = self.roi(featureMap, rois, bbox, label)
 
-        out = self.res_blocks(featureMap)
-        return out
+        return self.res_blocks(pool), gt_roi_loc, gt_roi_label
 
 
 class ResidualBlock(nn.Module):

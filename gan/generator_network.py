@@ -43,7 +43,9 @@ class GeneratorNetwork(torch.nn.Module):
         outFromGenerator = self.generator(outFromFirstConvBlock, img_size, scale)
         featureMap = self.lastFourConvBlocks(outFromFirstConvBlock)
         rpn_locs, rpn_scores, rois, roi_indices, anchor = self.rpn(featureMap, img_size, scale)
-        pool = self.roi(featureMap, rois, roi_indices)
+        pool, gt_roi_loc, gt_roi_label = self.roi(featureMap, rois, roi_indices)
+        pool = pool + outFromGenerator
+        pool = pool.view(pool.size(0), -1)
         roi_cls_locs, roi_scores = self.classifier(pool)
 
         return roi_cls_locs, roi_scores, rois, roi_indices
